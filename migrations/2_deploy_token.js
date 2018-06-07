@@ -1,8 +1,8 @@
 'use strict';
 
-const EventTradeTokenSample = artifacts.require('EventTradeTokenSample.sol');
+const EventTradeToken = artifacts.require('EventTradeToken.sol');
 
 
 module.exports = function(deployer, network) {
-    deployer.deploy(EventTradeTokenSample);
+    deployer.deploy(EventTradeToken);
 };
