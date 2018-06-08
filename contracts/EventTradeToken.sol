@@ -81,8 +81,11 @@ contract Ownable {
  */
 contract ERC20Basic {
     function totalSupply() public view returns (uint256);
+
     function balanceOf(address who) public view returns (uint256);
+
     function transfer(address to, uint256 value) public returns (bool);
+
     event Transfer(address indexed from, address indexed to, uint256 value);
 }
 
@@ -92,8 +95,11 @@ contract ERC20Basic {
  */
 contract ERC20 is ERC20Basic {
     function allowance(address owner, address spender) public view returns (uint256);
+
     function transferFrom(address from, address to, uint256 value) public returns (bool);
+
     function approve(address spender, uint256 value) public returns (bool);
+
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
@@ -153,7 +159,7 @@ contract BasicToken is ERC20Basic {
  */
 contract StandardToken is ERC20, BasicToken {
 
-    mapping (address => mapping (address => uint256)) internal allowed;
+    mapping(address => mapping(address => uint256)) internal allowed;
 
 
     /**
@@ -284,27 +290,30 @@ contract MintableToken is StandardToken, Ownable {
     }
 }
 
-contract EventTradeToken is MintableToken{
+contract EventTradeToken is MintableToken {
     struct product {
         uint8 code;
-        bytes32 name;
+        string name;
         uint price;
     }
 
-    bytes32 [] clients_;
+    constructor(){
+    }
+
+    string [] clients_;
     product [] products_;
 
-    mapping(bytes32 => uint) private balances_;
+    mapping(string => uint) private balances_;
 
     uint initPremium_ = 50;
 
-    function newClient(bytes32 _client) public {
-        require(containString(clients_, _client) == false );
+    function newClient(string _client) public {
+        require(containString(clients_, _client) == false);
         clients_.push(_client);
         balances_[_client] = initPremium_;
     }
 
-    function getClientBalance(bytes32 _client) public view returns (uint){
+    function getClientBalance(string _client) public view returns (uint){
         if (containString(clients_, _client)) {
             return balances_[_client];
         } else {
@@ -312,19 +321,19 @@ contract EventTradeToken is MintableToken{
         }
     }
 
-    function addProducts(uint8[] _code, bytes32[] _name, uint[] _price) public {
-        require(_code.length == _name.length);
-        require(_price.length == _name.length);
-        uint _newProductsCount = _code.length;
+    //    function addProducts(uint8[] _code, string[] _name, uint[] _price) public {
+    //        require(_code.length == _name.length);
+    //        require(_price.length == _name.length);
+    //        uint _newProductsCount = _code.length;
+    //
+    //        if (_newProductsCount > 0) {
+    //            for (uint8 i = 0; i < _newProductsCount; i++) {
+    //                addProduct(_code[i], _name[i], _price[i]);
+    //            }
+    //        }
+    //    }
 
-        if (_newProductsCount > 0) {
-            for (uint8 i = 0; i < _newProductsCount; i++) {
-                addProduct(_code[i], _name[i], _price[i]);
-            }
-        }
-    }
-
-    function addProduct(uint8 _code, bytes32 _name, uint _price) public {
+    function addProduct(uint8 _code, string _name, uint _price) public {
         uint _productsCount = products_.length;
         bool add = true;
         if (_productsCount > 0) {
@@ -343,11 +352,11 @@ contract EventTradeToken is MintableToken{
         return products_.length;
     }
 
-    function getProductByIndex(uint8 num) public view returns (uint8 _code, bytes32 _name, uint _price){
+    function getProductByIndex(uint8 num) public view returns (uint8 _code, string _name, uint _price){
         return (products_[num].code, products_[num].name, products_[num].price);
     }
 
-    function buyProduct(bytes32 _client, uint8 _code) public {
+    function buyProduct(string _client, uint8 _code) public {
         require(containString(clients_, _client));
         uint8 productIndex = getProductIndex(_code);
         require(productIndex >= 0);
@@ -356,11 +365,11 @@ contract EventTradeToken is MintableToken{
     }
 
 
-    function compareStrings(bytes32 a, bytes32 b) view returns (bool){
+    function compareStrings(string a, string b) private returns (bool){
         return keccak256(a) == keccak256(b);
     }
 
-    function containString(bytes32[] stringArray, bytes32 str) view returns (bool){
+    function containString(string[] stringArray, string str) private returns (bool){
         if (stringArray.length > 0) {
             for (uint8 i = 0; i < stringArray.length; i++) {
                 if (keccak256(stringArray[i]) == keccak256(str))
@@ -372,7 +381,7 @@ contract EventTradeToken is MintableToken{
         return false;
     }
 
-    function hasProductCode(uint8 _code) view returns (bool){
+    function hasProductCode(uint8 _code) private returns (bool){
         if (products_.length > 0) {
             for (uint8 i = 0; i < products_.length; i++) {
                 if (products_[i].code == _code) {
@@ -383,7 +392,7 @@ contract EventTradeToken is MintableToken{
         return false;
     }
 
-    function getProductIndex(uint8 _code) view returns (uint8){
+    function getProductIndex(uint8 _code) private returns (uint8){
         require(hasProductCode(_code));
         if (products_.length > 0) {
             for (uint8 i = 0; i < products_.length; i++) {
