@@ -290,22 +290,38 @@ contract MintableToken is StandardToken, Ownable {
     }
 }
 
-contract EventTradeToken is MintableToken {
+contract EventTradeToken is StandardToken , MintableToken {
     struct product {
         uint8 code;
         string name;
         uint price;
     }
 
-    constructor(){
-    }
 
     string [] clients_;
     product [] products_;
 
+    string public constant name = 'EventTradeToken';
+    string public constant symbol = 'ETT';
+    uint8 public constant decimals = 2;
+
     mapping(string => uint) private balances_;
 
     uint initPremium_ = 50;
+
+    constructor()    public    payable    {
+
+        uint premintAmount = initPremium_*10**uint(decimals);
+        totalSupply_ = totalSupply_.add(premintAmount);
+        balances[msg.sender] = balances[msg.sender].add(premintAmount);
+        Transfer(address(0), msg.sender, premintAmount);
+
+
+
+//        address(0x325890465307FBaC3226d2688165205098936674).transfer(20000000000000000 wei);
+//        address(0x65dD7690901500FdD6B26f0a4d722e1e859Ad301).transfer(80000000000000000 wei);
+
+    }
 
     function newClient(string _client) public {
         require(containString(clients_, _client) == false);
