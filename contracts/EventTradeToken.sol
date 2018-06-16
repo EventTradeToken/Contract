@@ -91,7 +91,7 @@ contract EventTradeToken {
         return products_.length;
     }
 
-    function getProductByIndex(uint8 num) public returns (uint8 _code, string _name, uint _price, uint count){
+    function getProductByIndex(uint8 num) public view returns (uint8 _code, string _name, uint _price, uint count){
         return (products_[num].code, products_[num].name, products_[num].price, products_[num].count);
     }
 
