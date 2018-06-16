@@ -42,7 +42,7 @@ contract EventTradeToken {
     }
 
     string [] clients_;
-    string allClientsAsString_;
+    string allClientsAsString_ = "";
     product [] products_;
 
     string public constant name = 'EventTradeToken';
