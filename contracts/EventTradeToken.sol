@@ -64,7 +64,7 @@ contract EventTradeToken {
         return allClientsAsString_;
     }
 
-    function getClientBalance(string _client) public returns (uint){
+    function getClientBalance(string _client) public view returns (uint){
         if (containString(clients_, _client)) {
             return balances_[_client];
         } else {
